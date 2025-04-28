@@ -1,26 +1,33 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
 
-	"github.com/ShopOnGO/favorites-service/configs"
+	"github.com/ShopOnGO/ShopOnGO/configs"
+	"github.com/ShopOnGO/ShopOnGO/pkg/db"
+	"github.com/ShopOnGO/ShopOnGO/pkg/logger"
+	"github.com/ShopOnGO/favorites-service/internal/favorites"
 	"github.com/ShopOnGO/favorites-service/migrations"
-	"github.com/ShopOnGO/favorites-service/pkg/db"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	migrations.CheckForMigrations()
 	conf := configs.LoadConfig()
-	// database := db.NewDB(conf)
-	_ = db.NewDB(conf)
-	router := gin.Default()
+	database := db.NewDB(conf)
+	router := mux.NewRouter()
 
 	// repository
+	favoriteRepo := favorites.NewFavoriteRepository(database)
 
 	// service
+	favoriteService := favorites.NewFavoriteService(favoriteRepo)
 
 	// handler
+	favorites.NewFavoriteHandler(router, favorites.FavoriteHandlerDeps{
+		Config: conf,
+		FavoriteService: favoriteService,
+	})
 
 	// kafkaProductConsumer := kafkaService.NewConsumer(
 	// 	conf.KafkaProduct.Brokers,
@@ -38,8 +45,9 @@ func main() {
 	// })
 
 	go func() {
-		if err := router.Run(":8083"); err != nil {
-			fmt.Println("Ошибка при запуске HTTP-сервера:", err)
+		logger.Info("Favorites service listening on 8083")
+		if err := http.ListenAndServe(":8083", router); err != nil {
+			logger.Errorf("Failed to start HTTP server: %v", err)
 		}
 	}()
 
