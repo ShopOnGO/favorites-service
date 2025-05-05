@@ -1,0 +1,108 @@
+basePath: /
+host: localhost:8083
+info:
+  contact: {}
+  description: API для управления списком избранного пользователей
+  title: Favorites Service API
+  version: "1.0"
+paths:
+  /favorites:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает все варианты продуктов, добавленные в избранное авторизованным
+        пользователем.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'favorites: array of ProductVariant'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid user_id
+          schema:
+            type: string
+        "500":
+          description: failed to get favorites
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получение списка избранных товаров
+      tags:
+      - favorites
+  /favorites/{product_variant_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет указанный продукт (product_variant_id) из списка избранного
+        для авторизованного пользователя.
+      parameters:
+      - description: ID варианта товара
+        in: path
+        name: product_variant_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'status: removed from favorites'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: invalid product_variant_id or user_id
+          schema:
+            type: string
+        "500":
+          description: failed to remove from favorites
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Удаление товара из избранного
+      tags:
+      - favorites
+    post:
+      consumes:
+      - application/json
+      description: Добавляет указанный продукт (product_variant_id) в список избранного
+        для авторизованного пользователя. Перед добавлением проверяется, что вариант
+        продукта существует и активен.
+      parameters:
+      - description: ID варианта товара
+        in: path
+        name: product_variant_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'status: added to favorites'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: invalid product_variant_id or user_id
+          schema:
+            type: string
+        "404":
+          description: product variant does not exist or inactive
+          schema:
+            type: string
+        "500":
+          description: failed to add to favorites
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Добавление товара в избранное
+      tags:
+      - favorites
+swagger: "2.0"

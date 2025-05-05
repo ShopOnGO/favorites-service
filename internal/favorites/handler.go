@@ -56,6 +56,19 @@ func NewFavoriteHandler(router *mux.Router, deps FavoriteHandlerDeps) {
 	router.Handle("/favorites", middleware.IsAuthed(handler.ListFavorites(), deps.Config)).Methods("GET")
 }
 
+// AddFavorite добавляет товар в избранное.
+// @Summary      Добавление товара в избранное
+// @Description  Добавляет указанный продукт (product_variant_id) в список избранного для авторизованного пользователя. Перед добавлением проверяется, что вариант продукта существует и активен.
+// @Tags         favorites
+// @Accept       json
+// @Produce      json
+// @Param        product_variant_id  path    uint64  true  "ID варианта товара"
+// @Success      200  {object}  map[string]string  "status: added to favorites"
+// @Failure      400  {string}  string  "invalid product_variant_id or user_id"
+// @Failure      404  {string}  string  "product variant does not exist or inactive"
+// @Failure      500  {string}  string  "failed to add to favorites"
+// @Security     ApiKeyAuth
+// @Router       /favorites/{product_variant_id} [post]
 func (h *FavoriteHandler) AddFavorite() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -96,6 +109,18 @@ func (h *FavoriteHandler) AddFavorite() http.HandlerFunc {
 	}
 }
 
+// DeleteFavorite удаляет товар из избранного.
+// @Summary      Удаление товара из избранного
+// @Description  Удаляет указанный продукт (product_variant_id) из списка избранного для авторизованного пользователя.
+// @Tags         favorites
+// @Accept       json
+// @Produce      json
+// @Param        product_variant_id  path    uint64  true  "ID варианта товара"
+// @Success      200  {object}  map[string]string  "status: removed from favorites"
+// @Failure      400  {string}  string  "invalid product_variant_id or user_id"
+// @Failure      500  {string}  string  "failed to remove from favorites"
+// @Security     ApiKeyAuth
+// @Router       /favorites/{product_variant_id} [delete]
 func (h *FavoriteHandler) DeleteFavorite() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, ok := r.Context().Value(middleware.ContextUserIDKey).(uint)
@@ -125,6 +150,17 @@ func (h *FavoriteHandler) DeleteFavorite() http.HandlerFunc {
 	}
 }
 
+// ListFavorites возвращает список избранного.
+// @Summary      Получение списка избранных товаров
+// @Description  Возвращает все варианты продуктов, добавленные в избранное авторизованным пользователем.
+// @Tags         favorites
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}  "favorites: array of ProductVariant"
+// @Failure      400  {string}  string  "invalid user_id"
+// @Failure      500  {string}  string  "failed to get favorites"
+// @Security     ApiKeyAuth
+// @Router       /favorites [get]
 func (h *FavoriteHandler) ListFavorites() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, ok := r.Context().Value(middleware.ContextUserIDKey).(uint)

@@ -1,3 +1,9 @@
+// @title           Favorites Service API
+// @version         1.0
+// @description     API для управления списком избранного пользователей
+// @host            localhost:8083
+// @BasePath        /
+
 package main
 
 import (
@@ -9,6 +15,9 @@ import (
 	"github.com/ShopOnGO/favorites-service/internal/favorites"
 	"github.com/ShopOnGO/favorites-service/migrations"
 	"github.com/gorilla/mux"
+
+	httpSwagger "github.com/swaggo/http-swagger"
+    _ "github.com/ShopOnGO/favorites-service/docs"
 )
 
 func main() {
@@ -17,6 +26,9 @@ func main() {
 	database := db.NewDB(conf)
 	router := mux.NewRouter()
 
+	// Swagger UI
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	
 	// repository
 	favoriteRepo := favorites.NewFavoriteRepository(database)
 
@@ -43,6 +55,9 @@ func main() {
 	// 	key := string(msg.Key)
 	// 	return product.HandleProductEvent(msg.Value, key, productService)
 	// })
+
+	// swagger
+	router.Handle("/swagger/", httpSwagger.WrapHandler)
 
 	go func() {
 		logger.Info("Favorites service listening on 8083")
