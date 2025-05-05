@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/ShopOnGO/ShopOnGO/configs"
 	"github.com/ShopOnGO/ShopOnGO/pkg/logger"
@@ -31,9 +32,13 @@ type GRPCClient struct {
 }
 
 func InitGRPCClient() *GRPCClient {
-	conn, err := grpc.Dial("product_container:50053", grpc.WithInsecure(), grpc.WithBlock())
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(ctx, "product_container:50053", grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		logger.Errorf("Ошибка подключения к gRPC серверу: %v", err)
+		return nil // или panic, или os.Exit(1), в зависимости от логики
 	}
 
 	logger.Info("gRPC connected")
@@ -46,14 +51,17 @@ func InitGRPCClient() *GRPCClient {
 
 
 func NewFavoriteHandler(router *mux.Router, deps FavoriteHandlerDeps) {
+	logger.Info("1")
 	handler := &FavoriteHandler{
 		FavoriteService: deps.FavoriteService,
 		Client:  InitGRPCClient(),
 	}
+	logger.Info("2")
 
 	router.Handle("/favorites/{product_variant_id}", middleware.IsAuthed(handler.AddFavorite(), deps.Config)).Methods("POST")
 	router.Handle("/favorites/{product_variant_id}", middleware.IsAuthed(handler.DeleteFavorite(), deps.Config)).Methods("DELETE")
 	router.Handle("/favorites", middleware.IsAuthed(handler.ListFavorites(), deps.Config)).Methods("GET")
+	logger.Info("3")
 }
 
 // AddFavorite добавляет товар в избранное.

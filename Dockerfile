@@ -43,5 +43,8 @@ RUN chmod +x /favorites/wait-for-db.sh
 # Преобразуем формат строки в скрипте wait-for-db.sh в Unix-формат
 RUN dos2unix /favorites/wait-for-db.sh
 
+# 🔥 Копируем папку docs для Swagger
+COPY --from=builder /favorites/docs /favorites/docs
+
 # Запуск приложения
 CMD ["/favorites/favorites_service"]
