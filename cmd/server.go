@@ -56,9 +56,6 @@ func main() {
 	// 	return product.HandleProductEvent(msg.Value, key, productService)
 	// })
 
-	// swagger
-	router.Handle("/swagger/", httpSwagger.WrapHandler)
-
 	go func() {
 		logger.Info("Favorites service listening on 8083")
 		if err := http.ListenAndServe(":8083", router); err != nil {
