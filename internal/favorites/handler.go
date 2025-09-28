@@ -51,17 +51,14 @@ func InitGRPCClient() *GRPCClient {
 
 
 func NewFavoriteHandler(router *mux.Router, deps FavoriteHandlerDeps) {
-	logger.Info("1")
 	handler := &FavoriteHandler{
 		FavoriteService: deps.FavoriteService,
 		Client:  InitGRPCClient(),
 	}
-	logger.Info("2")
 
-	router.Handle("/favorites/{product_variant_id}", middleware.IsAuthed(handler.AddFavorite(), deps.Config)).Methods("POST")
-	router.Handle("/favorites/{product_variant_id}", middleware.IsAuthed(handler.DeleteFavorite(), deps.Config)).Methods("DELETE")
-	router.Handle("/favorites", middleware.IsAuthed(handler.ListFavorites(), deps.Config)).Methods("GET")
-	logger.Info("3")
+	router.Handle("/favorites-service/{product_variant_id}", middleware.IsAuthed(handler.AddFavorite(), deps.Config)).Methods("POST")
+	router.Handle("/favorites-service/{product_variant_id}", middleware.IsAuthed(handler.DeleteFavorite(), deps.Config)).Methods("DELETE")
+	router.Handle("/favorites-service/", middleware.IsAuthed(handler.ListFavorites(), deps.Config)).Methods("GET")
 }
 
 // AddFavorite добавляет товар в избранное.
