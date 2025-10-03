@@ -41,6 +41,7 @@ paths:
         для авторизованного пользователя.
       parameters:
       - description: ID варианта товара
+        format: int64
         in: path
         name: product_variant_id
         required: true
@@ -75,6 +76,7 @@ paths:
         продукта существует и активен.
       parameters:
       - description: ID варианта товара
+        format: int64
         in: path
         name: product_variant_id
         required: true

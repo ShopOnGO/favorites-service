@@ -77,6 +77,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "format": "int64",
                         "description": "ID варианта товара",
                         "name": "product_variant_id",
                         "in": "path",
@@ -133,6 +134,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "format": "int64",
                         "description": "ID варианта товара",
                         "name": "product_variant_id",
                         "in": "path",

@@ -71,6 +71,7 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "format": "int64",
                         "description": "ID варианта товара",
                         "name": "product_variant_id",
                         "in": "path",
@@ -127,6 +128,7 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "format": "int64",
                         "description": "ID варианта товара",
                         "name": "product_variant_id",
                         "in": "path",
