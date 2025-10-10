@@ -31,7 +31,7 @@ WORKDIR /favorites
 # Устанавливаем postgresql-client и dos2unix
 RUN apk add --no-cache postgresql-client dos2unix
 
-COPY .env /favorites/.env
+# COPY .env /favorites/.env
 
 # Копируем бинарный файл из предыдущего этапа
 COPY --from=builder /favorites/favorites_service /favorites/favorites_service

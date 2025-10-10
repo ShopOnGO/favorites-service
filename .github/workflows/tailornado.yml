@@ -1,0 +1,16 @@
+name: CI favorites
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  CI:
+    uses: ShopOnGO/ShopOnGO/.github/workflows/template.yml@main
+    with:
+      service_name: favorites-service
+      dockerfile: ./Dockerfile
+      compose_file: docker-compose.ci.yml
+    secrets: inherit
