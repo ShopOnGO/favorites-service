@@ -2,7 +2,9 @@ package favorites
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -39,7 +41,12 @@ func InitGRPCClient() *GRPCClient {
     for i := 0; i < 5; i++ {
         ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
         defer cancel()
-        conn, err = grpc.DialContext(ctx, "product_container:50053", grpc.WithInsecure(), grpc.WithBlock())
+        conn, err = grpc.DialContext(
+			ctx, fmt.Sprintf("%s:%s", os.Getenv("PRODUCT_SERVICE_HOST"), os.Getenv("PRODUCT_SERVICE_PORT")),
+			grpc.WithInsecure(),
+			grpc.WithBlock(),
+		)
+
         if err == nil {
             break
         }
@@ -49,7 +56,10 @@ func InitGRPCClient() *GRPCClient {
 
     if err != nil {
         logger.Error("❌ Не удалось подключиться к gRPC серверу product_container")
+		return nil
     }
+
+	logger.Info("grpc connected")
 
     client := pb.NewProductVariantServiceClient(conn)
     return &GRPCClient{ProductVariantClient: client}
@@ -97,6 +107,11 @@ func (h *FavoriteHandler) AddFavorite() http.HandlerFunc {
 		}
 		if productVariantID == 0 || userID == 0 {
 			http.Error(w, "product_variant_id and user_id are required", http.StatusBadRequest)
+			return
+		}
+
+		if h.Client == nil || h.Client.ProductVariantClient == nil {
+			http.Error(w, "product service unavailable", http.StatusServiceUnavailable)
 			return
 		}
 
@@ -194,6 +209,11 @@ func (h *FavoriteHandler) ListFavorites() http.HandlerFunc {
 		var variantIDs []uint32
 		for _, fav := range favorites {
 			variantIDs = append(variantIDs, uint32(fav.ProductVariantID))
+		}
+
+		if h.Client == nil || h.Client.ProductVariantClient == nil {
+			http.Error(w, "product service unavailable", http.StatusServiceUnavailable)
+			return
 		}
 
 		productsResp, err := h.Client.ProductVariantClient.GetProductVariants(context.Background(), &pb.GetProductVariantsRequest{
