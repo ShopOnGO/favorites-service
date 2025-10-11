@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"github.com/ShopOnGO/ShopOnGO/configs"
 	"github.com/ShopOnGO/ShopOnGO/pkg/logger"
 	"github.com/ShopOnGO/favorites-service/internal/favorites"
 )
@@ -24,18 +25,12 @@ func CheckForMigrations() error {
 }
 
 func RunMigrations() error {
-    // Убираем godotenv, переменные уже должны быть в окружении контейнера
-    dsn := os.Getenv("DSN")
-    if dsn == "" {
-        panic("DSN is not set in environment")
-    }
+    cfg := configs.LoadConfig()
 
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-        //DisableForeignKeyConstraintWhenMigrating: true,
-    })
-    if err != nil {
-        panic(err)
-    }
+	db, err := gorm.Open(postgres.Open(cfg.Db.Dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 
     err = db.AutoMigrate(favorites.Favorite{})
     if err != nil {

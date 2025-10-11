@@ -32,22 +32,29 @@ type GRPCClient struct {
 }
 
 func InitGRPCClient() *GRPCClient {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+    var conn *grpc.ClientConn
+    var err error
 
-	conn, err := grpc.DialContext(ctx, "product_container:50053", grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		logger.Errorf("Ошибка подключения к gRPC серверу: %v", err)
-		return nil // или panic, или os.Exit(1), в зависимости от логики
-	}
+    // повторять подключение 5 раз с паузой
+    for i := 0; i < 5; i++ {
+        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        defer cancel()
+        conn, err = grpc.DialContext(ctx, "product_container:50053", grpc.WithInsecure(), grpc.WithBlock())
+        if err == nil {
+            break
+        }
+        logger.Warnf("gRPC connection attempt %d failed: %v", i+1, err)
+        time.Sleep(3 * time.Second)
+    }
 
-	logger.Info("gRPC connected")
-	ProductVariantClient := pb.NewProductVariantServiceClient(conn)
+    if err != nil {
+        logger.Error("❌ Не удалось подключиться к gRPC серверу product_container")
+    }
 
-	return &GRPCClient{
-		ProductVariantClient: ProductVariantClient,
-	}
+    client := pb.NewProductVariantServiceClient(conn)
+    return &GRPCClient{ProductVariantClient: client}
 }
+
 
 
 func NewFavoriteHandler(router *mux.Router, deps FavoriteHandlerDeps) {
