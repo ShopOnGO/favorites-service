@@ -3,7 +3,6 @@ package migrations
 import (
 	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -25,23 +24,24 @@ func CheckForMigrations() error {
 }
 
 func RunMigrations() error {
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic(err)
-	}
-	db, err := gorm.Open(postgres.Open(os.Getenv("DSN")), &gorm.Config{
-		//DisableForeignKeyConstraintWhenMigrating: true, //временно игнорировать миграции в первый раз а потом их добавить
-	})
-	if err != nil {
-		panic(err)
-	}
+    // Убираем godotenv, переменные уже должны быть в окружении контейнера
+    dsn := os.Getenv("DSN")
+    if dsn == "" {
+        panic("DSN is not set in environment")
+    }
 
-	err = db.AutoMigrate(favorites.Favorite{})
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+        //DisableForeignKeyConstraintWhenMigrating: true,
+    })
+    if err != nil {
+        panic(err)
+    }
 
-	if err != nil {
-		return err
-	}
+    err = db.AutoMigrate(favorites.Favorite{})
+    if err != nil {
+        return err
+    }
 
-	logger.Info("✅")
-	return nil
+    logger.Info("✅ Migrations completed")
+    return nil
 }

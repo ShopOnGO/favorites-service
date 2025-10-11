@@ -6,7 +6,6 @@ require (
 	github.com/ShopOnGO/ShopOnGO v0.0.0-20250422181843-6a6c79c9c03b
 	github.com/ShopOnGO/product-proto v0.0.0-20250428123543-e3249a1d6640
 	github.com/gorilla/mux v1.8.1
-	github.com/joho/godotenv v1.5.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.4
 	google.golang.org/grpc v1.72.0
@@ -30,6 +29,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
