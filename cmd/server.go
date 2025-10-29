@@ -16,19 +16,24 @@ import (
 	"github.com/ShopOnGO/favorites-service/migrations"
 	"github.com/gorilla/mux"
 
+	_ "github.com/ShopOnGO/favorites-service/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
-    _ "github.com/ShopOnGO/favorites-service/docs"
 )
 
 func main() {
 	migrations.CheckForMigrations()
 	conf := configs.LoadConfig()
+	consoleLvl := conf.LogLevel
+	fileLvl := conf.FileLogLevel
+	logger.InitLogger(consoleLvl, fileLvl)
+	logger.EnableFileLogging("TailorNado_favorites-service")
+
 	database := db.NewDB(conf)
 	router := mux.NewRouter()
 
 	// Swagger UI
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
-	
+
 	// repository
 	favoriteRepo := favorites.NewFavoriteRepository(database)
 
@@ -37,7 +42,7 @@ func main() {
 
 	// handler
 	favorites.NewFavoriteHandler(router, favorites.FavoriteHandlerDeps{
-		Config: conf,
+		Config:          conf,
 		FavoriteService: favoriteService,
 	})
 

@@ -3,7 +3,7 @@ module github.com/ShopOnGO/favorites-service
 go 1.23.3
 
 require (
-	github.com/ShopOnGO/ShopOnGO v0.0.0-20250422181843-6a6c79c9c03b
+	github.com/ShopOnGO/ShopOnGO v0.0.0-20251029122247-7565929e2f88
 	github.com/ShopOnGO/product-proto v0.0.0-20250428123543-e3249a1d6640
 	github.com/gorilla/mux v1.8.1
 	github.com/swaggo/http-swagger v1.3.4

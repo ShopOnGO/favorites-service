@@ -2,6 +2,8 @@ github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/ShopOnGO/ShopOnGO v0.0.0-20250422181843-6a6c79c9c03b h1:yVwYeQFDWhOAQoEIV8asgKLJr9AZ7ayUG8X0ShG5UzM=
 github.com/ShopOnGO/ShopOnGO v0.0.0-20250422181843-6a6c79c9c03b/go.mod h1:GsGVCRemo8mC/jP6qgaHpGNBMRzE48Ndl247F4+Pf24=
+github.com/ShopOnGO/ShopOnGO v0.0.0-20251029122247-7565929e2f88 h1:30HScsTz+5AILZS2+X1L+kBZuxTrSbri1cVbuD6flEs=
+github.com/ShopOnGO/ShopOnGO v0.0.0-20251029122247-7565929e2f88/go.mod h1:+XUWLw+XMnRVn51UUJ4ssWgRN4tqLL4tIosiLuQZ26E=
 github.com/ShopOnGO/product-proto v0.0.0-20250428123543-e3249a1d6640 h1:FTaLXAbVO6jUu+cBOE8JErKMdARHGM+fECNYjv6ga1I=
 github.com/ShopOnGO/product-proto v0.0.0-20250428123543-e3249a1d6640/go.mod h1:mVznrdQc19foO9kck7Iqh9n1fCpdkw3X3mbPEw/cQHk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
